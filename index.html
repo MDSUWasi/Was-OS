@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Was-Operating System</title>
+    <link rel="stylesheet" href="css/desktop.css">
+</head>
+<body>
+
+    <div id="top-panel">
+        <div class="panel-section"><div class="panel-btn" style="font-weight:600;">Activities</div></div>
+        <div class="panel-section"><div id="panel-clock" class="panel-btn">00:00 AM</div></div>
+        <div class="panel-section"><div class="panel-btn" onclick="OS.launchApp('settings')">⚙️ Settings</div></div>
+    </div>
+
+    <div id="desktop-workspace">
+        <div id="icon-grid">
+            <div class="app-shortcut" onclick="OS.launchApp('terminal')">
+                <div class="shortcut-icon">📟</div><span class="shortcut-text">Terminal</span>
+            </div>
+            <div class="app-shortcut" onclick="OS.launchApp('sysmon')">
+                <div class="shortcut-icon">📊</div><span class="shortcut-text">Monitor</span>
+            </div>
+            <div class="app-shortcut" onclick="OS.launchApp('canvas')">
+                <div class="shortcut-icon">🎨</div><span class="shortcut-text">Paint Studio</span>
+            </div>
+            <div class="app-shortcut" onclick="OS.launchApp('settings')">
+                <div class="shortcut-icon">⚙️</div><span class="shortcut-text">Settings</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="dash-dock">
+        <div class="dock-item" onclick="OS.launchApp('terminal')">📟</div>
+        <div class="dock-item" onclick="OS.launchApp('sysmon')">📊</div>
+        <div class="dock-item" onclick="OS.launchApp('canvas')">🎨</div>
+        <div class="dock-item" onclick="OS.launchApp('settings')">⚙️</div>
+    </div>
+
+    <script src="js/os-core.js"></script>
+    <script src="js/wm.js"></script>
+</body>
+</html>

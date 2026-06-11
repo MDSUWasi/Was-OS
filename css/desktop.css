@@ -1,0 +1,167 @@
+:root {
+    --panel-bg: rgba(28, 28, 36, 0.8);
+    --window-bg: rgba(36, 36, 50, 0.95);
+    --window-header: #1e1e2a;
+    --accent-color: #3584e4; /* Was-OS Blue */
+    --text-main: #ffffff;
+    --text-muted: #a0a0b0;
+    --border-spec: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-main);
+    /* Default Native Background Gradient */
+    background: linear-gradient(135deg, #1c355e 0%, #0c101f 100%);
+    background-size: cover;
+    background-position: center;
+}
+
+/* --- TOP PANEL --- */
+#top-panel {
+    height: 32px;
+    width: 100%;
+    background-color: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: var(--border-spec);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    font-size: 0.85rem;
+    position: absolute;
+    top: 0;
+    z-index: 999999;
+}
+
+.panel-section { display: flex; align-items: center; gap: 16px; }
+.panel-btn { cursor: pointer; padding: 2px 8px; border-radius: 4px; }
+.panel-btn:hover { background: rgba(255,255,255,0.1); }
+
+/* --- WORKSPACE --- */
+#desktop-workspace {
+    position: absolute;
+    top: 32px;
+    bottom: 0;
+    width: 100%;
+}
+
+#icon-grid {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.app-shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 85px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.shortcut-icon {
+    width: 52px;
+    height: 52px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: var(--border-spec);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+    transition: transform 0.2s, background 0.2s;
+}
+.app-shortcut:hover .shortcut-icon {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.15);
+}
+.shortcut-text { font-size: 0.75rem; text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+
+/* --- MANAGED WINDOWS --- */
+.os-window {
+    position: absolute;
+    background: var(--window-bg);
+    border: var(--border-spec);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.window-header {
+    background: var(--window-header);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    border-bottom: var(--border-spec);
+}
+.window-title { font-size: 0.85rem; font-weight: 500; }
+.window-controls { display: flex; gap: 8px; }
+.win-control-btn { width: 14px; height: 14px; border-radius: 50%; border: none; cursor: pointer; }
+.btn-close { background: #ff5f56; }
+.btn-min { background: #ffbd2e; }
+.btn-max { background: #27c93f; }
+
+.window-body { flex: 1; overflow: auto; width: 100%; height: 100%; position: relative; }
+
+/* --- APP CONTAINERS --- */
+.term-box { background: #111116; color: #4ade80; font-family: monospace; padding: 12px; height: 100%; display: flex; flex-direction: column; }
+.term-log { flex: 1; overflow-y: auto; white-space: pre-wrap; font-size: 0.85rem; }
+.term-row { display: flex; gap: 6px; margin-top: 4px; }
+.term-input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-family: inherit; }
+
+.sysmon-box { padding: 20px; background: #1e1e28; height: 100%; }
+.sysmon-card { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 6px; margin-bottom: 12px; border-left: 4px solid var(--accent-color); }
+
+.canvas-box { display: flex; flex-direction: column; height: 100%; background: #14141a; }
+.canvas-bar { padding: 8px; background: #1e1e28; display: flex; gap: 10px; border-bottom: var(--border-spec); }
+.canvas-el { background: #ffffff; cursor: crosshair; display: block; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+
+/* --- DASH DOCK --- */
+#dash-dock {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20, 20, 30, 0.6);
+    backdrop-filter: blur(12px);
+    border: var(--border-spec);
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: flex;
+    gap: 12px;
+    z-index: 999999;
+}
+.dock-item {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.dock-item:hover { transform: translateY(-4px); background: rgba(255,255,255,0.12); }
