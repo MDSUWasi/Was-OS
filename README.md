@@ -1,5 +1,9 @@
 Was-Operating System v4.0
-License: MIT | Offline Ready: Yes | Web-Based: Browser Only | Language: JavaScript ES2022
+
+License: MIT 
+Offline Ready: Yes  
+Web-Based: Browser Only 
+
 A fully functional, offline-capable web-based operating system simulation built with pure HTML, CSS, and JavaScript. No external dependencies required.
 
 TABLE OF CONTENTS
@@ -79,30 +83,6 @@ Performance API: Tracks boot times.
 Data Flow:
 User Click -> Event Listener -> WindowManager -> OS Launch App -> VFS Read/Write -> LocalStorage -> DOM Update -> Visual Feedback
 
-
-FILE STRUCTURE
-
-was-os/
-├── index.html                    # Main entry point
-├── LICENSE                       # MIT License text
-├── README.md                     # This documentation file
-├── .gitignore                    # Git ignore rules
-├── css/
-│   └── styles.css                # Complete stylesheet
-└── js/
-├── init.js                   # Boot sequence & initialization
-├── utils/
-│   └── notifier.js           # Notification system logic
-├── core/
-│   ├── os.js                 # Core OS kernel (process management)
-│   ├── vfs.js                # Virtual File System implementation
-│   └── wm.js                 # Window Manager logic
-└── apps/
-├── calculator.js         # Calculator application
-├── filemanager.js        # File explorer application
-├── notepad.js            # Text editor application
-├── settings.js           # System settings application
-└── terminal.js           # Command line interface application
 
 
 CODE DOCUMENTATION
@@ -293,10 +273,7 @@ Then open: http://localhost:8080
 
 Browser Requirements:
 
-Chrome 90+
-Firefox 88+
-Safari 14+
-Edge 90+
+Any web browser ( but with latest update)
 
 Required Features: ES2022 JavaScript support, localStorage API, Flexbox/Grid CSS, CSS Variables.
 
