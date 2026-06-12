@@ -2,43 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Was-Operating System</title>
-    <link rel="stylesheet" href="css/desktop.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Was-Operating System v4.0</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
 </head>
 <body>
-
-    <div id="top-panel">
-        <div class="panel-section"><div class="panel-btn" style="font-weight:600;">Activities</div></div>
-        <div class="panel-section"><div id="panel-clock" class="panel-btn">00:00 AM</div></div>
-        <div class="panel-section"><div class="panel-btn" onclick="OS.launchApp('settings')">⚙️ Settings</div></div>
+    <!-- Top Panel -->
+    <div id="top-panel" role="banner">
+        <div class="panel-left">
+            <button id="start-btn" class="panel-btn" aria-label="Start Menu">
+                <span class="btn-icon">☰</span>
+                <span class="btn-text">Start</span>
+            </button>
+            <button id="activities-btn" class="panel-btn" aria-label="Activities">🔍</button>
+        </div>
+        <div class="panel-right">
+            <div id="clock" class="panel-btn" aria-live="polite">00:00</div>
+            <div id="calendar" class="panel-btn" aria-live="polite">Jan 1</div>
+            <button id="settings-btn" class="panel-btn" aria-label="Settings">⚙️</button>
+            <button id="power-btn" class="panel-btn" aria-label="Power">⏻</button>
+        </div>
     </div>
 
-    <div id="desktop-workspace">
-        <div id="icon-grid">
-            <div class="app-shortcut" onclick="OS.launchApp('terminal')">
-                <div class="shortcut-icon">📟</div><span class="shortcut-text">Terminal</span>
-            </div>
-            <div class="app-shortcut" onclick="OS.launchApp('sysmon')">
-                <div class="shortcut-icon">📊</div><span class="shortcut-text">Monitor</span>
-            </div>
-            <div class="app-shortcut" onclick="OS.launchApp('canvas')">
-                <div class="shortcut-icon">🎨</div><span class="shortcut-text">Paint Studio</span>
-            </div>
-            <div class="app-shortcut" onclick="OS.launchApp('settings')">
-                <div class="shortcut-icon">⚙️</div><span class="shortcut-text">Settings</span>
+    <!-- Start Menu -->
+    <div id="start-menu" class="hidden" role="menu" aria-hidden="true">
+        <div class="start-header">
+            <h3>Applications</h3>
+        </div>
+        <div id="start-app-list" role="list"></div>
+        <div class="start-footer">
+            <button id="show-all-btn">Show All</button>
+            <button id="shutdown-btn">Shutdown</button>
+        </div>
+    </div>
+
+    <!-- Desktop Workspace -->
+    <div id="desktop-workspace"></div>
+
+    <!-- Taskbar -->
+    <div id="taskbar" role="toolbar" aria-label="Taskbar">
+        <div id="taskbar-items"></div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notification-area" role="alert"></div>
+
+    <!-- Activities/Search Overlay -->
+    <div id="activities-overlay" class="hidden" role="dialog" aria-modal="true">
+        <div class="activity-search">
+            <input type="text" id="search-input" placeholder="Search apps, files..." autocomplete="off">
+            <div id="search-results"></div>
+        </div>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div id="confirm-dialog" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="confirm-title">Confirm</h3>
+            <p id="confirm-message"></p>
+            <div class="modal-buttons">
+                <button id="confirm-yes">Yes</button>
+                <button id="confirm-no" class="cancel">No</button>
             </div>
         </div>
     </div>
 
-    <div id="dash-dock">
-        <div class="dock-item" onclick="OS.launchApp('terminal')">📟</div>
-        <div class="dock-item" onclick="OS.launchApp('sysmon')">📊</div>
-        <div class="dock-item" onclick="OS.launchApp('canvas')">🎨</div>
-        <div class="dock-item" onclick="OS.launchApp('settings')">⚙️</div>
-    </div>
-
-    <script src="js/os-core.js"></script>
-    <script src="js/wm.js"></script>
+    <!-- LOAD ORDER IS CRITICAL -->
+    <script src="js/core/vfs.js"></script>
+    <script src="js/core/os.js"></script>
+    <script src="js/core/wm.js"></script>
+    <script src="js/utils/notifier.js"></script>
+    <script src="js/apps/calculator.js"></script>
+    <script src="js/apps/terminal.js"></script>
+    <script src="js/apps/notepad.js"></script>
+    <script src="js/apps/filemanager.js"></script>
+    <script src="js/apps/settings.js"></script>
+    <script src="js/apps/about.js"></script>
+    <script src="js/init.js"></script>
 </body>
 </html>
