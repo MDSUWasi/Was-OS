@@ -1,7 +1,3 @@
-/**
- * Was-OS Settings v4.0 - WITH IMAGE UPLOAD SUPPORT
- */
-
 OS.registerApp({
     id: 'settings',
     title: 'Settings',
@@ -24,11 +20,11 @@ OS.registerApp({
             header.style.cssText = 'margin-bottom:20px;border-bottom:1px solid #333;padding-bottom:10px;';
             root.appendChild(header);
 
-            // --- WALLPAPER SECTION ---
+            // WALLPAPER SECTION
             const wpSection = document.createElement('div');
             wpSection.style.cssText = 'background:#202024;padding:20px;border-radius:8px;margin-bottom:20px;';
             
-            // Hidden File Input
+            // File Input
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.accept = 'image/*';
@@ -53,7 +49,7 @@ OS.registerApp({
                 <button id="${pid}_reset_bg" style="width:100%;margin-top:10px;padding:8px;background:#e01b24;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;">🗑️ Reset to Default</button>
             `;
             
-            // --- SYSTEM INFO SECTION ---
+            // SYSTEM INFO SECTION
             const infoSection = document.createElement('div');
             infoSection.style.cssText = 'background:#202024;padding:20px;border-radius:8px;';
             infoSection.innerHTML = `
@@ -69,7 +65,7 @@ OS.registerApp({
             container.appendChild(root);
             container.appendChild(fileInput); // Append hidden input
             
-            // --- LOGIC ---
+            // LOGIC
 
             // 1. Handle Upload Button Click
             document.getElementById(`${pid}_upload_btn`).onclick = () => {

@@ -1,7 +1,3 @@
-/**
- * Was-OS Terminal v4.0 - FIXED (No Syntax Errors)
- */
-
 (function() {
     OS.registerApp({
         id: 'terminal',
@@ -23,7 +19,7 @@
                 state.currentDir = 'documents';
                 state.theme = localStorage.getItem('wasos_terminal_theme') || 'dark';
                 
-                // --- HELPER FUNCTIONS ---
+                // HELPER FUNCTIONS
                 function getPrompt(dir) {
                     return `user@wasos:${dir ? '~/' + dir : '~'}$`;
                 }
@@ -58,7 +54,7 @@
                     localStorage.setItem('wasos_terminal_theme', theme);
                 }
 
-                // --- THE "NEOFETCH" LOGIC ---
+                // THE "about" LOGIC
                 function generateAboutStats() {
                     const now = new Date();
                     const uptimeMs = Date.now() - (state.startTime || now.getTime());
@@ -78,14 +74,12 @@
                     const kernel = 'JavaScript ES2022';
                     const resolution = `${window.innerWidth}x${window.innerHeight}`;
                     
-                    // ASCII Logo (Blue)
+                    // Logo
                     const logoLines = [
-                        "  ██╗    ██╗███████╗██████╗ ██████╗ ",
-                        "  ██║    ██║██╔════╝██╔══██╗██╔══██╗",
-                        "  ██║ █╗ ██║█████╗  ██████╔╝██████╔╝",
-                        "  ██║███╗██║██╔══╝  ██╔══██╗██╔══██╗",
-                        "  ╚███╔███╔╝███████╗██║  ██║██████╔╝",
-                        "   ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝╚═════╝ "
+                        "================================",
+                        "========== W A S - O S ==========",
+                        "========== Web-Based OS ==========",
+                        "================================"
                     ];
                     
                     const infoLines = [
@@ -118,7 +112,7 @@
                     return result;
                 }
 
-                // --- COMMAND EXECUTOR ---
+                // COMMAND EXECUTOR
                 function executeCmd(rawCmd) {
                     const args = rawCmd.split(/\s+/).filter(arg => arg);
                     const cmd = args[0].toLowerCase();
@@ -181,7 +175,7 @@
                     }
                 }
 
-                // --- BUILD UI ---
+                // BUILD UI
                 const root = document.createElement('div');
                 root.style.cssText = 'height:100%;display:flex;flex-direction:column;background:#0d0d10;font-family:"JetBrains Mono",monospace;font-size:0.9rem;overflow:hidden;';
                 

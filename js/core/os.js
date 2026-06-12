@@ -1,8 +1,3 @@
-/**
- * Was-OS System Core
- * Manages app registry, processes, and system-level functions
- */
-
 const OS = {
     runningProcesses: {},
     appRegistry: {},
@@ -198,7 +193,7 @@ const OS = {
     },
     
     /**
-     * Populated Start Menu
+     * Setup Start Menu
      */
     setupStartMenu() {
         const list = document.getElementById('start-app-list');

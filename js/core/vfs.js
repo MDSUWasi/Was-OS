@@ -1,8 +1,3 @@
-/**
- * Was-OS Virtual File System (VFS)
- * Persistent storage using localStorage
- */
-
 const VFS = {
     STORAGE_KEY: 'wasos_vfs_data',
     

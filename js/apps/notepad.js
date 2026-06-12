@@ -1,7 +1,3 @@
-/**
- * Was-OS Notepad v4.0 - FIXED
- */
-
 OS.registerApp({
     id: 'notepad',
     title: 'Notepad',
@@ -91,7 +87,7 @@ OS.registerApp({
                 Notifier.show({title: 'Saved', message: `Saved to ${filename}`, type: 'success'});
             };
             
-            // Event: Input (Dirty tracking)
+            // Event: Editor Input
             editorArea.addEventListener('input', () => {
                 const tab = state.tabs[state.activeTabIndex];
                 if(tab && tab.content !== editorArea.value) {

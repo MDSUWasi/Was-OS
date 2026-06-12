@@ -1,13 +1,8 @@
-/**
- * Was-OS Boot Sequence
- * Initializes all system components
- */
-
 (function() {
     const bootTime = performance.now();
     
     console.log('%c╔═══════════════════════════════════╗', 'color:#3584e4;font-weight:bold;');
-    console.log('%c║      Was-Operating System v4.0     ║', 'color:#3584e4;');
+    console.log('%c║      Was-Operating System         ║', 'color:#3584e4;');
     console.log('%c╚═══════════════════════════════════╝', 'color:#3584e4;font-weight:bold;');
     
     window.addEventListener('load', async () => {

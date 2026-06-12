@@ -1,7 +1,3 @@
-/**
- * Was-OS File Manager v4.0 - FIXED
- */
-
 OS.registerApp({
     id: 'filemanager',
     title: 'File Manager',

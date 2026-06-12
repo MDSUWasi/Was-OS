@@ -1,8 +1,3 @@
-/**
- * Was-OS Window Manager v4.1 (FIXED & OPTIMIZED)
- * Handles all window creation, manipulation, focus, and memory management
- */
-
 const WindowManager = {
     windows: {},
     activeWindow: null,
@@ -12,7 +7,7 @@ const WindowManager = {
     
     // Configuration
     config: {
-        maxWindows: 100,      // Increased from 50 to 100
+        maxWindows: 100,      
         baseZIndex: 1000,
         animationDuration: 200
     },
@@ -40,7 +35,7 @@ const WindowManager = {
             return null;
         }
 
-        // --- FIX: Real-time Sanitized Check ---
+        // Real-time Sanitized Check
         const currentOpen = Object.keys(this.windows).length;
         
         if (currentOpen >= this.config.maxWindows) {

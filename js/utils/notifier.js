@@ -1,8 +1,3 @@
-/**
- * Was-OS Notification Manager
- * Toast notifications system
- */
-
 const Notifier = {
     container: null,
     
