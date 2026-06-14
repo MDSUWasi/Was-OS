@@ -1,7 +1,9 @@
 # Was-Operating System v4.0
 
 License: MIT 
+
 Offline Ready: Yes  
+
 Web-Based: Browser Only 
 
 A fully functional, offline-capable web-based operating system simulation built with pure HTML, CSS, and JavaScript. No external dependencies required.
