@@ -40,7 +40,6 @@ OS.registerApp({
     }
 });
 
-// Tic Tac Toe
 OS.registerApp({
     id: 'tic-tac-toe',
     title: 'Tic Tac Toe',
@@ -113,7 +112,6 @@ OS.registerApp({
     }
 });
 
-// Snake Placeholder
 OS.registerApp({
     id: 'snake',
     title: 'Snake',
@@ -130,7 +128,6 @@ OS.registerApp({
     }
 });
 
-// Memory Placeholder
 OS.registerApp({
     id: 'memory',
     title: 'Memory',

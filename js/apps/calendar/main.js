@@ -1,4 +1,3 @@
-// --- 1. Data Models ---
 class EventItem {
     constructor(data) {
         this.id = data.id || `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -18,7 +17,6 @@ class EventItem {
     static fromJSON(json) { return new EventItem(json); }
 }
 
-// --- 2. State Management ---
 class Store {
     constructor() {
         this.state = {
@@ -119,7 +117,6 @@ class Store {
     }
 }
 
-// --- 3. UI Renderer ---
 class Renderer {
     constructor(store) {
         this.store = store;
@@ -131,24 +128,20 @@ class Renderer {
         this.yearGrid = document.getElementById('year-grid');
         this.currentPeriod = document.getElementById('current-period');
         this.emptyState = document.getElementById('empty-state');
-        
-        // Initialize Timetables once
+
         this.initTimetables();
     }
 
     initTimetables() {
-        // Generate 24h sidebar for Week and Day views
         const hours = [];
         for (let i = 0; i < 24; i++) {
             const time = `${i.toString().padStart(2, '0')}:00`;
             hours.push(`<div class="time-slot">${time}</div>`);
         }
         
-        // Week Sidebar
         const weekSidebar = document.querySelector('.week-grid .time-sidebar');
         if (weekSidebar) weekSidebar.innerHTML = hours.join('');
-        
-        // Day Sidebar
+    
         if (this.dayTimeSidebar) this.dayTimeSidebar.innerHTML = hours.join('');
     }
 
@@ -185,7 +178,7 @@ class Renderer {
         }
     }
 
-// --- Month View Logic ---
+
     renderMonth(date, events) {
         const year = date.getFullYear();
         const month = date.getMonth();
@@ -197,8 +190,6 @@ class Renderer {
         this.currentPeriod.textContent = firstDayOfMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         
         this.monthDays.innerHTML = '';
-        
-        // 1. Previous Month Padding
         const prevMonthLastDay = new Date(year, month, 0).getDate();
         for (let i = startDayOfWeek - 1; i >= 0; i--) {
             const cell = document.createElement('div');
@@ -207,7 +198,6 @@ class Renderer {
             this.monthDays.appendChild(cell);
         }
         
-        // 2. Current Month Days
         for (let d = 1; d <= lastDayOfMonth.getDate(); d++) {
             const cell = document.createElement('div');
             cell.className = 'day-cell';
@@ -219,7 +209,6 @@ class Renderer {
             
             cell.innerHTML = `<div class="day-number">${d}</div>`;
             
-            // ... (Event logic remains the same) ...
             const dayEvents = events.filter(e => {
                 const evtDate = new Date(e.start);
                 return evtDate.getDate() === d && evtDate.getMonth() === month && evtDate.getFullYear() === year;
@@ -246,7 +235,6 @@ class Renderer {
             this.monthDays.appendChild(cell);
         }
         
-        // 3. Next Month Padding
         const totalCells = startDayOfWeek + lastDayOfMonth.getDate();
         const remainingCells = 42 - totalCells; // 6 rows * 7 cols = 42
         
@@ -261,7 +249,6 @@ class Renderer {
         }
     }
 
-    // --- Week View ---
     renderWeek(date, events) {
         const startOfWeek = new Date(date);
         startOfWeek.setDate(date.getDate() - date.getDay());
@@ -313,7 +300,6 @@ class Renderer {
         }
     }
 
-    // --- Day View (With Timetable) ---
     renderDay(date, events) {
         this.currentPeriod.textContent = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
         
@@ -344,7 +330,6 @@ class Renderer {
         });
     }
 
-    // --- Year View ---
     renderYear(date, events) {
         this.currentPeriod.textContent = date.getFullYear();
         this.yearGrid.innerHTML = '';
@@ -376,7 +361,6 @@ class Renderer {
         });
     }
 
-    // --- Modal Logic ---
     openAdd(date = null) {
         this.modal.showModal();
         document.getElementById('modal-title').textContent = 'Add New Event';
@@ -499,27 +483,25 @@ class Renderer {
     }
 }
 
-// --- 4. Initialization ---
+
 document.addEventListener('DOMContentLoaded', () => {
     const store = new Store();
     const renderer = new Renderer(store);
     store.subscribe(() => renderer.render());
 
-    // View Navigation
+
     document.querySelectorAll('.nav-item').forEach(btn => btn.onclick = () => {
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         store.setState({ view: btn.dataset.view });
     });
 
-    // Category Filter
     document.querySelectorAll('.category-btn').forEach(btn => btn.onclick = () => {
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         store.setState({ category: btn.dataset.category });
     });
 
-    // Date Navigation
     document.getElementById('prev-btn').onclick = () => {
         const date = new Date(store.state.currentDate);
         if (store.state.view === 'month') date.setMonth(date.getMonth() - 1);
@@ -542,14 +524,11 @@ document.addEventListener('DOMContentLoaded', () => {
         store.setState({ currentDate: new Date() });
     };
 
-    // Search
     document.getElementById('search-input').oninput = (e) => store.setState({ searchQuery: e.target.value });
 
-    // Buttons
     document.getElementById('add-event-btn').onclick = () => renderer.openAdd();
     document.getElementById('empty-add-btn').onclick = () => renderer.openAdd();
 
-    // Theme
     const themeToggle = document.getElementById('theme-toggle');
     const themeMenu = document.getElementById('theme-menu');
     themeToggle.onclick = (e) => { e.stopPropagation(); themeMenu.classList.toggle('hidden'); };
@@ -559,7 +538,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderer.showToast(`Theme: ${btn.textContent.split(' ')[1]}`, 'success');
     });
 
-    // Modal Controls
     const modal = document.getElementById('event-modal');
     document.getElementById('modal-close').onclick = () => modal.close();
     document.getElementById('cancel-btn').onclick = () => modal.close();
@@ -578,10 +556,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Form Submission ---
     const form = document.getElementById('event-form');
     form.onsubmit = (e) => {
-        e.preventDefault(); // STOP PAGE RELOAD
+        e.preventDefault(); 
         
         const id = document.getElementById('event-id').value;
         const data = {
@@ -607,7 +584,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.close();
     };
 
-    // Export/Import
     document.getElementById('export-btn').onclick = () => renderer.exportToICS();
     document.getElementById('import-btn').onclick = () => document.getElementById('import-file').click();
     document.getElementById('import-file').onchange = (e) => {

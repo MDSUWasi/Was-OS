@@ -125,8 +125,6 @@ Copyright © 2026 Was-OS Project
                     default: return `'${cmd}' not recognized. Type 'help'.`;
                 }
             }
-
-            // Build UI
             root = document.createElement('div');
             root.style.cssText = 'height:100%;display:flex;flex-direction:column;background:#0d0d10;font-family:"JetBrains Mono",monospace;font-size:0.9rem;overflow:hidden;';
 
@@ -152,8 +150,6 @@ Copyright © 2026 Was-OS Project
             setTheme(state.theme);
             promptLabel.textContent = getPrompt(state.currentDir);
             print("Was-OS Terminal v5.0\nType 'about' for system info.\nType 'help' for commands.\n\n");
-
-            // Theme buttons
             root.querySelector(`#${pid}_dark`).onclick = () => setTheme('dark');
             root.querySelector(`#${pid}_light`).onclick = () => setTheme('light');
 

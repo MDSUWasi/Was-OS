@@ -78,7 +78,7 @@ OS.registerApp({
 
             root.append(wpSection, styleSection, appearanceSection, infoSection);
             container.appendChild(root);
-            container.appendChild(fileInput); // Append hidden input
+            container.appendChild(fileInput); 
 
             const savedBackground = localStorage.getItem('wasos_background');
             const savedBgType = localStorage.getItem('wasos_bg_type');
