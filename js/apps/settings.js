@@ -14,17 +14,14 @@ OS.registerApp({
             const root = document.createElement('div');
             root.style.cssText = 'height:100%;background:#1a1a1e;color:#fff;padding:20px;overflow-y:auto;font-family:sans-serif;';
             
-            // Title
             const header = document.createElement('h2');
             header.textContent = '⚙️ Settings';
             header.style.cssText = 'margin-bottom:20px;border-bottom:1px solid #333;padding-bottom:10px;';
             root.appendChild(header);
 
-            // WALLPAPER SECTION
             const wpSection = document.createElement('div');
             wpSection.style.cssText = 'background:#202024;padding:20px;border-radius:8px;margin-bottom:20px;';
             
-            // File Input
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.accept = 'image/*';
@@ -49,13 +46,12 @@ OS.registerApp({
                 <button id="${pid}_reset_bg" style="width:100%;margin-top:10px;padding:8px;background:#e01b24;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;">🗑️ Reset to Default</button>
             `;
             
-            // SYSTEM INFO SECTION
             const infoSection = document.createElement('div');
             infoSection.style.cssText = 'background:#202024;padding:20px;border-radius:8px;';
             infoSection.innerHTML = `
                 <h3 style="margin-top:0;color:#fff;">System Information</h3>
                 <div style="margin-top:10px;line-height:1.6;color:#ddd;">
-                    <p><strong>OS Version:</strong> Was-OS v4.0</p>
+                    <p><strong>OS Version:</strong> Was-OS v5.0</p>
                     <p><strong>Storage Used:</strong> ${(VFS.getStorageUsed() / 1024).toFixed(2)} KB</p>
                     <p><strong>Current BG:</strong> <span id="${pid}_bg_status">Default</span></p>
                 </div>
@@ -99,19 +95,14 @@ OS.registerApp({
                 }
             });
 
-            // LOGIC
-
-            // 1. Handle Upload Button Click
             document.getElementById(`${pid}_upload_btn`).onclick = () => {
                 fileInput.click();
             };
 
-            // 2. Handle File Selection
             fileInput.onchange = (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
 
-                // Check size (Max 3MB recommended for localStorage)
                 if (file.size > 3 * 1024 * 1024) {
                     alert("❌ File too large! Please choose an image under 3MB.");
                     fileInput.value = '';
@@ -122,11 +113,9 @@ OS.registerApp({
                 reader.onload = function(evt) {
                     const base64Data = evt.target.result;
                     
-                    // Save to LocalStorage
                     localStorage.setItem('wasos_background', base64Data);
                     localStorage.setItem('wasos_bg_type', 'image');
                     
-                    // Apply immediately
                     applyWallpaper(base64Data);
                     
                     Notifier.show({
@@ -136,7 +125,7 @@ OS.registerApp({
                     });
                     
                     document.getElementById(`${pid}_bg_status`).textContent = file.name;
-                    fileInput.value = ''; // Reset input
+                    fileInput.value = ''; 
                 };
                 
                 reader.onerror = () => {
@@ -146,7 +135,6 @@ OS.registerApp({
                 reader.readAsDataURL(file);
             };
 
-            // 3. Theme Buttons
             const themes = {
                 gradient: 'linear-gradient(135deg, #1c355e 0%, #0c101f 100%)',
                 dark: '#1a1a1e',
@@ -205,7 +193,6 @@ OS.registerApp({
                 dateElement.style.display = showDateInput.checked ? 'inline-flex' : 'none';
             });
 
-            // 4. Reset Button
             document.getElementById(`${pid}_reset_bg`).onclick = () => {
                 localStorage.removeItem('wasos_background');
                 localStorage.removeItem('wasos_bg_type');
@@ -229,18 +216,15 @@ OS.registerApp({
     cleanup(pid, state) {}
 });
 
-// Helper function to apply wallpaper (Global scope access needed)
 function applyWallpaper(value) {
     document.body.style.background = value;
     
-    // Disable animation if it's an image
     if (value.startsWith('data:image')) {
         document.body.style.animation = 'none';
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
         document.body.style.backgroundRepeat = 'no-repeat';
     } else {
-        // If it's a color/gradient, use animation
         document.body.style.animation = 'bgShift 15s ease infinite';
     }
 }

@@ -16,7 +16,6 @@
             state.theme = localStorage.getItem('wasos_terminal_theme') || 'dark';
             state.startTime = Date.now();
 
-            // Helper functions
             function getPrompt(dir) {
                 return `user@wasos:${dir ? '~/' + dir : '~'}$`;
             }
@@ -66,7 +65,7 @@
   <span style='color:#2ec27e'>Memory:</span>  ${(VFS.getStorageUsed() / 1024).toFixed(2)} KB<br>
   <span style='color:#2ec27e'>Theme:</span>   ${state.theme}<br>
 <br>
-Copyright © 2024 Was-OS Project
+Copyright © 2026 Was-OS Project
 `;
             }
 
@@ -133,7 +132,7 @@ Copyright © 2024 Was-OS Project
 
             root.innerHTML = `
 <div class="term-toolbar" style="padding:8px;background:#1a1a1e;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center;">
-    <span style="color:#666;font-size:0.75rem;">Was-Shell v4.0</span>
+    <span style="color:#666;font-size:0.75rem;">Was-Shell v5.0</span>
     <div style="display:flex;gap:6px;">
         <button id="${pid}_dark" style="background:#333;color:white;border:none;padding:2px 8px;font-size:0.7rem;border-radius:4px;cursor:pointer;">Dark</button>
         <button id="${pid}_light" style="background:#ddd;color:black;border:none;padding:2px 8px;font-size:0.7rem;border-radius:4px;cursor:pointer;">Light</button>
@@ -152,7 +151,7 @@ Copyright © 2024 Was-OS Project
 
             setTheme(state.theme);
             promptLabel.textContent = getPrompt(state.currentDir);
-            print("Was-OS Terminal v4.0\nType 'about' for system info.\nType 'help' for commands.\n\n");
+            print("Was-OS Terminal v5.0\nType 'about' for system info.\nType 'help' for commands.\n\n");
 
             // Theme buttons
             root.querySelector(`#${pid}_dark`).onclick = () => setTheme('dark');

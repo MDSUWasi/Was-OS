@@ -59,7 +59,7 @@
             setTimeout(() => {
                 Notifier.show({
                     title: 'System Ready',
-                    message: 'Welcome to Was-OS v4.0!',
+                    message: 'Welcome to Was-OS v5.0!',
                     type: 'success',
                     duration: 4000
                 });

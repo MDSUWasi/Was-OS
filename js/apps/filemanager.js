@@ -9,7 +9,7 @@ OS.registerApp({
         const container = document.getElementById(bodyId);
         if (!container) throw new Error("Container missing");
 
-        state.currentPath = ''; // Root
+        state.currentPath = ''; 
 
         const root = document.createElement('div');
         root.style.cssText = 'height:100%;display:flex;flex-direction:column;background:#1a1a1e;';
