@@ -1,5 +1,5 @@
 # Was-Operating System v5.0
-License: MIT | Offline Ready: Yes | Web-Based: Browser Only | Language: JavaScript ES2022
+License: MIT | Web-Based: Browser Only | Language: JavaScript ES2022
 A fully functional, offline-capable web-based operating system simulation built with pure HTML, CSS, and JavaScript. No external dependencies required.
 
 
