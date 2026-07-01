@@ -7,7 +7,6 @@ const VFS = {
         try {
             const stored = localStorage.getItem(this.STORAGE_KEY);
             if (!stored) {
-                // Initialize with default structure
                 this.data = {
                     documents: {
                         'welcome.txt': 'Welcome to Was-OS!\n\nYour virtual filesystem persists across sessions.',
@@ -75,8 +74,6 @@ const VFS = {
             
             const fileName = parts.pop();
             let current = this.data;
-            
-            // Navigate/create path
             for (const part of parts) {
                 if (!current[part]) current[part] = {};
                 current = current[part];
@@ -172,7 +169,8 @@ const VFS = {
     
     getStorageUsed() {
         try {
-            return new TextEncoder().encode(JSON.stringify(localStorage)).length;
+            const stored = localStorage.getItem(this.STORAGE_KEY) || '';
+            return new TextEncoder().encode(stored).length;
         } catch {
             return 0;
         }
@@ -191,5 +189,4 @@ const VFS = {
     }
 };
 
-// Export globally
 window.VFS = VFS;

@@ -8,16 +8,14 @@ const OS = {
     },
     
     /**
-     * Register an application with the OS
-     * @param {string|object} idOrConfig - App ID or full config object
-     * @param {string} [title] - Display title (optional if using object)
-     * @param {function} [initFn] - Initialization function (optional if using object)
+     * @param {string|object} idOrConfig 
+     * @param {string} [title] 
+     * @param {function} [initFn] 
      */
     registerApp(idOrConfig, title, initFn) {
         let appDef;
         
         if (typeof idOrConfig === 'object') {
-            // Object syntax: {id, title, icon, description, init, cleanup, ...}
             appDef = {
                 id: idOrConfig.id,
                 title: idOrConfig.title || idOrConfig.id,
@@ -30,7 +28,6 @@ const OS = {
                 metadata: idOrConfig.metadata || {}
             };
         } else {
-            // Param syntax: registerApp('id', 'Title', initFn)
             appDef = {
                 id: idOrConfig,
                 title: title || idOrConfig,
@@ -49,7 +46,6 @@ const OS = {
             return false;
         }
         
-        // Prevent duplicate registration
         if (this.appRegistry[appDef.id]) {
             console.warn(`[OS] App '${appDef.id}' already registered.`);
             return false;
@@ -61,11 +57,10 @@ const OS = {
     },
     
     /**
-     * Launch an application
-     * @param {string} appId - The app ID to launch
-     * @returns {string|null} Process ID or null on failure
+     * @param {string} appId 
+     * @returns {string|null} 
      */
-    launchApp(appId) {
+    launchApp(appId, options = {}) {
         const appDef = this.appRegistry[appId];
         
         if (!appDef) {
@@ -78,7 +73,6 @@ const OS = {
             return null;
         }
         
-        // Single instance check
         if (appDef.singleInstance) {
             const existingPid = this._findRunningProcess(appId);
             if (existingPid && WindowManager?.windows[existingPid]) {
@@ -90,19 +84,16 @@ const OS = {
             }
         }
         
-        // Create process ID
         const pid = `PID_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
         
-        // Add to running processes
         this.runningProcesses[pid] = {
             id: appId,
             title: appDef.title,
-            state: {},
+            state: options.state || {},
             launchedAt: Date.now(),
             lastFocused: Date.now()
         };
         
-        // Create window via WindowManager
         if (typeof WindowManager !== 'undefined') {
             WindowManager.createWindow(pid, appDef.title, appId, appDef.icon);
         } else {
@@ -116,14 +107,12 @@ const OS = {
     },
     
     /**
-     * Close a running process
-     * @param {string} pid - Process ID
+     * @param {string} pid 
      */
     closeProcess(pid) {
         const process = this.runningProcesses[pid];
         if (!process) return;
         
-        // Run cleanup if defined
         const appDef = this.appRegistry[process.id];
         if (appDef && typeof appDef.cleanup === 'function') {
             try {
@@ -133,10 +122,8 @@ const OS = {
             }
         }
         
-        // Remove from processes
         delete this.runningProcesses[pid];
         
-        // Destroy window
         if (typeof WindowManager !== 'undefined') {
             WindowManager.destroyWindow(pid);
         }
@@ -145,7 +132,6 @@ const OS = {
     },
     
     /**
-     * Find PID by app ID
      * @private
      */
     _findRunningProcess(appId) {
@@ -155,7 +141,6 @@ const OS = {
     },
     
     /**
-     * Update taskbar display
      * @private
      */
     _updateTaskbar() {
@@ -192,9 +177,7 @@ const OS = {
         }
     },
     
-    /**
-     * Setup Start Menu
-     */
+
     setupStartMenu() {
         const list = document.getElementById('start-app-list');
         if (!list) return;
@@ -225,9 +208,7 @@ const OS = {
         }
     },
     
-    /**
-     * Shutdown the system
-     */
+
     shutdown() {
         if (confirm('Shutdown Was-OS? This will close all windows.')) {
             document.body.style.opacity = '0';
@@ -244,9 +225,7 @@ const OS = {
         }
     },
     
-    /**
-     * Get stats about the system
-     */
+
     getStats() {
         return {
             openWindows: Object.keys(this.runningProcesses).length,
@@ -256,5 +235,4 @@ const OS = {
     }
 };
 
-// Export globally
 window.OS = OS;

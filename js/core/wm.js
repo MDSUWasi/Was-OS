@@ -5,7 +5,6 @@ const WindowManager = {
     dragState: null,
     resizeState: null,
     
-    // Configuration
     config: {
         maxWindows: 100,      
         baseZIndex: 1000,
@@ -16,12 +15,11 @@ const WindowManager = {
         this._setupKeyboardShortcuts();
         console.log('[WM] Window Manager initialized');
         
-        // Periodic cleanup check (every 60s) to remove ghost windows
         setInterval(() => this._cleanupGhostWindows(), 60000);
     },
     
     /**
-     * Create a new window
+     * Createing a new window
      * @param {string} pid - Process ID
      * @param {string} title - Window title
      * @param {string} appId - Application ID
@@ -35,7 +33,6 @@ const WindowManager = {
             return null;
         }
 
-        // Real-time Sanitized Check
         const currentOpen = Object.keys(this.windows).length;
         
         if (currentOpen >= this.config.maxWindows) {
@@ -51,8 +48,6 @@ const WindowManager = {
 
         const winId = `win_${pid}`;
         
-        // Calculate offset for cascading effect
-        // Only use actual open windows count, not the full list length
         const offset = Math.min(currentOpen * 30, 300); 
 
         const win = document.createElement('div');
@@ -61,7 +56,6 @@ const WindowManager = {
         win.dataset.pid = pid;
         win.dataset.appId = appId;
 
-        // Randomize slight position slightly to prevent perfect stacking
         const randomX = Math.floor(Math.random() * 20) - 10;
         const randomY = Math.floor(Math.random() * 20) - 10;
 
@@ -89,7 +83,6 @@ const WindowManager = {
 
         workspace.appendChild(win);
 
-        // Store window data
         this.windows[pid] = {
             element: win,
             body: document.getElementById(`body_${pid}`),
@@ -98,14 +91,13 @@ const WindowManager = {
             isMaximized: false,
             prevState: null,
             lastFocused: Date.now(),
-            created: Date.now()
+            created: Date.now(),
+            handlers: {}
         };
 
-        // Bind events
         this._bindEvents(win, pid);
         this.focus(pid);
 
-        // Initialize app
         setTimeout(() => {
             const appDef = OS?.appRegistry?.[appId];
             if (appDef && typeof appDef.init === 'function') {
@@ -122,14 +114,13 @@ const WindowManager = {
     },
 
     /**
-     * Destroy a window
+     * remove a window
      * @param {string} pid - Process ID
      */
     destroyWindow(pid) {
         const winData = this.windows[pid];
         if (!winData) return;
 
-        // Animate exit
         winData.element.style.transition = `opacity ${this.config.animationDuration}ms ease, transform ${this.config.animationDuration}ms ease`;
         winData.element.style.opacity = '0';
         winData.element.style.transform = 'scale(0.95)';
@@ -141,20 +132,17 @@ const WindowManager = {
         }, this.config.animationDuration);
 
         delete this.windows[pid];
-
-        // If we closed the active window, try to activate another one
         if (this.activeWindow === pid) {
             this.activeWindow = null;
             const remaining = Object.keys(this.windows);
             if (remaining.length > 0) {
-                // Focus the most recently opened one
                 this.focus(remaining[remaining.length - 1]);
             }
         }
     },
 
     /**
-     * Focus a window
+     * Focused a window
      * @param {string} pid - Process ID
      */
     focus(pid) {
@@ -164,7 +152,6 @@ const WindowManager = {
         winData.element.style.zIndex = ++this.zIndexCounter;
         winData.lastFocused = Date.now();
 
-        // Remove focus class from others
         for (const p of Object.keys(this.windows)) {
             if (p !== pid) {
                 this.windows[p].element.classList.remove('focused');
@@ -173,6 +160,7 @@ const WindowManager = {
 
         winData.element.classList.add('focused');
         this.activeWindow = pid;
+        if (typeof OS !== 'undefined') OS._updateTaskbar();
     },
 
     minimize(pid) {
@@ -180,6 +168,7 @@ const WindowManager = {
         if (winData) {
             winData.isMinimized = true;
             winData.element.style.display = 'none';
+            if (typeof OS !== 'undefined') OS._updateTaskbar();
         }
     },
 
@@ -189,6 +178,7 @@ const WindowManager = {
             winData.isMinimized = false;
             winData.element.style.display = 'flex';
             this.focus(pid);
+            if (typeof OS !== 'undefined') OS._updateTaskbar();
         }
     },
 
@@ -210,7 +200,6 @@ const WindowManager = {
         const el = winData.element;
 
         if (winData.isMaximized) {
-            // Restore
             if (winData.prevState) {
                 el.style.width = winData.prevState.width;
                 el.style.height = winData.prevState.height;
@@ -219,7 +208,6 @@ const WindowManager = {
             }
             winData.isMaximized = false;
         } else {
-            // Save state and maximize
             winData.prevState = {
                 width: el.style.width,
                 height: el.style.height,
@@ -227,7 +215,6 @@ const WindowManager = {
                 left: el.style.left
             };
 
-            // Calculate full screen minus panels
             const topPanelHeight = 40;
             const taskbarHeight = 50;
             const availableHeight = window.innerHeight - topPanelHeight - taskbarHeight;
@@ -275,11 +262,6 @@ const WindowManager = {
         return this.windows[pid]?.isMinimized || false;
     },
 
-    /**
-     * Cleanup Ghost Windows
-     * Checks if a window exists in JS memory but not in DOM (or vice versa)
-     * Fixes desync issues that cause false "Max windows" errors.
-     */
     _cleanupGhostWindows() {
         const domIds = Array.from(document.querySelectorAll('.os-window')).map(el => el.id);
         let cleaned = false;
@@ -287,7 +269,6 @@ const WindowManager = {
         for (const [pid, winData] of Object.entries(this.windows)) {
             const expectedId = `win_${pid}`;
             
-            // Case 1: Window in JS but not in DOM -> Remove from JS
             if (!domIds.includes(expectedId)) {
                 console.warn(`[WM] Cleaning up ghost window ${expectedId}`);
                 delete this.windows[pid];
@@ -295,11 +276,8 @@ const WindowManager = {
                 continue;
             }
 
-            // Case 2: Window in DOM but not in JS (rare) -> Add to JS or ignore
             if (domIds.includes(expectedId) && !this.windows[pid]) {
-                 // Usually means a duplicate PID issue, but we can try to recover
                  console.warn(`[WM] Found orphaned DOM window ${expectedId}`);
-                 // For now, we just leave it to avoid crashing, but real fix is ensuring unique PIDs
             }
         }
 
@@ -309,7 +287,6 @@ const WindowManager = {
     },
 
     /**
-     * Switch between open windows (Alt+Tab logic)
      * @private
      */
     switchWindows(reverse) {
@@ -325,24 +302,20 @@ const WindowManager = {
     },
 
     /**
-     * Setup keyboard shortcuts
      * @private
      */
     _setupKeyboardShortcuts() {
         document.addEventListener('keydown', (e) => {
-            // Alt + Tab
             if (e.altKey && e.key === 'Tab') {
                 e.preventDefault();
                 this.switchWindows(e.shiftKey);
             }
 
-            // Ctrl/Cmd + W - Close window
             if ((e.ctrlKey || e.metaKey) && e.key === 'w' && this.activeWindow) {
                 e.preventDefault();
                 this.close(this.activeWindow);
             }
 
-            // Escape - Close current
             if (e.key === 'Escape' && this.activeWindow && !this.windows[this.activeWindow]?.isMaximized) {
                 this.close(this.activeWindow);
             }
@@ -350,11 +323,16 @@ const WindowManager = {
     },
 
     /**
-     * Bind window events (Drag, Resize, Controls)
      * @private
      */
     _bindEvents(win, pid) {
-        // Header drag
+        const winData = this.windows[pid];
+        const dragListener = this.handleDrag.bind(this);
+        const dragEndListener = this.stopDrag.bind(this);
+        const resizeListener = this.handleResize.bind(this);
+        const resizeEndListener = this.stopResize.bind(this);
+        winData.handlers = { dragListener, dragEndListener, resizeListener, resizeEndListener };
+
         const header = win.querySelector('.window-header');
         if (header) {
             header.addEventListener('mousedown', (e) => {
@@ -369,12 +347,11 @@ const WindowManager = {
                     initialY: win.offsetTop
                 };
 
-                document.addEventListener('mousemove', this.handleDrag.bind(this));
-                document.addEventListener('mouseup', this.stopDrag.bind(this));
+                document.addEventListener('mousemove', dragListener);
+                document.addEventListener('mouseup', dragEndListener);
             });
         }
 
-        // Resize handle
         const handle = win.querySelector('.resize-handle');
         if (handle) {
             handle.addEventListener('mousedown', (e) => {
@@ -387,12 +364,11 @@ const WindowManager = {
                     height: win.offsetHeight
                 };
 
-                document.addEventListener('mousemove', this.handleResize.bind(this));
-                document.addEventListener('mouseup', this.stopResize.bind(this));
+                document.addEventListener('mousemove', resizeListener);
+                document.addEventListener('mouseup', resizeEndListener);
             });
         }
 
-        // Window controls
         const btnMin = win.querySelector('.btn-min');
         const btnMax = win.querySelector('.btn-max');
         const btnClose = win.querySelector('.btn-close');
@@ -401,12 +377,10 @@ const WindowManager = {
         if (btnMax) btnMax.onclick = () => this.maximize(pid);
         if (btnClose) btnClose.onclick = () => this.close(pid);
 
-        // Bring to front on click
         win.addEventListener('mousedown', () => this.focus(pid));
     },
 
     /**
-     * Handle window dragging
      * @private
      */
     handleDrag(e) {
@@ -418,11 +392,10 @@ const WindowManager = {
         let newX = this.dragState.initialX + (e.clientX - this.dragState.startX);
         let newY = this.dragState.initialY + (e.clientY - this.dragState.startY);
 
-        // Bounds checking
-        const minTop = 40; // Top panel height
+        const minTop = 40; 
         const minLeft = 0;
         const maxWidth = window.innerWidth - win.offsetWidth;
-        const maxHeight = window.innerHeight - win.offsetHeight - 50; // Taskbar height
+        const maxHeight = window.innerHeight - win.offsetHeight - 50; 
 
         newX = Math.max(minLeft, Math.min(newX, maxWidth));
         newY = Math.max(minTop, Math.min(newY, maxHeight));
@@ -432,13 +405,15 @@ const WindowManager = {
     },
 
     stopDrag() {
+        if (!this.dragState) return;
+        const winData = this.windows[this.dragState.pid];
+        const handler = winData?.handlers;
+        document.removeEventListener('mousemove', handler?.dragListener || this.handleDrag.bind(this));
+        document.removeEventListener('mouseup', handler?.dragEndListener || this.stopDrag.bind(this));
         this.dragState = null;
-        document.removeEventListener('mousemove', this.handleDrag.bind(this));
-        document.removeEventListener('mouseup', this.stopDrag.bind(this));
     },
 
     /**
-     * Handle window resizing
      * @private
      */
     handleResize(e) {
@@ -455,13 +430,15 @@ const WindowManager = {
     },
 
     stopResize() {
+        if (!this.resizeState) return;
+        const winData = this.windows[this.resizeState.pid];
+        const handler = winData?.handlers;
+        document.removeEventListener('mousemove', handler?.resizeListener || this.handleResize.bind(this));
+        document.removeEventListener('mouseup', handler?.resizeEndListener || this.stopResize.bind(this));
         this.resizeState = null;
-        document.removeEventListener('mousemove', this.handleResize.bind(this));
-        document.removeEventListener('mouseup', this.stopResize.bind(this));
     },
 
     /**
-     * Show error in window
      * @private
      */
     _showError(pid, message) {
@@ -479,5 +456,4 @@ const WindowManager = {
     }
 };
 
-// Export globally
 window.WindowManager = WindowManager;

@@ -2,61 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Was-Operating System v4.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Was-Operating System</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
 </head>
 <body>
-    <!-- Top Panel -->
-    <div id="top-panel" role="banner">
+    <div id="top-panel">
         <div class="panel-left">
-            <button id="start-btn" class="panel-btn" aria-label="Start Menu">
-                <span class="btn-icon">☰</span>
-                <span class="btn-text">Start</span>
-            </button>
-            <button id="activities-btn" class="panel-btn" aria-label="Activities">🔍</button>
+            <button id="start-btn"><span>☰</span><span class="btn-text">Start</span></button>
+            <button id="activities-btn">🔍</button>
         </div>
         <div class="panel-right">
-            <div id="clock" class="panel-btn" aria-live="polite">00:00</div>
-            <div id="calendar" class="panel-btn" aria-live="polite">Jan 1</div>
-            <button id="settings-btn" class="panel-btn" aria-label="Settings">⚙️</button>
-            <button id="power-btn" class="panel-btn" aria-label="Power">⏻</button>
+            <div id="clock">00:00</div>
+            <div id="calendar">Jan 01</div>
+            <button id="settings-btn">⚙️</button>
+            <button id="power-btn">⏻</button>
         </div>
     </div>
 
-    <!-- Start Menu -->
-    <div id="start-menu" class="hidden" role="menu" aria-hidden="true">
-        <div class="start-header">
-            <h3>Applications</h3>
-        </div>
-        <div id="start-app-list" role="list"></div>
+    <div id="start-menu" class="hidden">
+        <div class="start-header"><h3>Applications</h3></div>
+        <div id="start-app-list"></div>
         <div class="start-footer">
-            <button id="show-all-btn">Show All</button>
+            <button id="show-all-btn">All Apps</button>
             <button id="shutdown-btn">Shutdown</button>
         </div>
     </div>
 
-    <!-- Desktop Workspace -->
+    <div id="custom-app-source" class="hidden"></div>
     <div id="desktop-workspace"></div>
-
-    <!-- Taskbar -->
-    <div id="taskbar" role="toolbar" aria-label="Taskbar">
-        <div id="taskbar-items"></div>
+    <div id="taskbar"><div id="taskbar-items"></div></div>
+    <div id="notification-area"></div>
+    <div id="activities-overlay" class="hidden">
+        <input type="text" id="search-input" placeholder="Search apps, files...">
     </div>
-
-    <!-- Notifications -->
-    <div id="notification-area" role="alert"></div>
-
-    <!-- Activities/Search Overlay -->
-    <div id="activities-overlay" class="hidden" role="dialog" aria-modal="true">
-        <div class="activity-search">
-            <input type="text" id="search-input" placeholder="Search apps, files..." autocomplete="off">
-            <div id="search-results"></div>
-        </div>
-    </div>
-
-    <!-- Confirmation Dialog -->
     <div id="confirm-dialog" class="modal hidden">
         <div class="modal-content">
             <h3 id="confirm-title">Confirm</h3>
@@ -68,7 +47,6 @@
         </div>
     </div>
 
-    <!-- LOAD ORDER IS CRITICAL -->
     <script src="js/core/vfs.js"></script>
     <script src="js/core/os.js"></script>
     <script src="js/core/wm.js"></script>
@@ -78,7 +56,18 @@
     <script src="js/apps/notepad.js"></script>
     <script src="js/apps/filemanager.js"></script>
     <script src="js/apps/settings.js"></script>
+    <script src="js/apps/notes.js"></script>
+    <script src="js/apps/spreadsheet.js"></script>
+    <script src="js/apps/browser.js"></script>
+    <script src="js/apps/paint.js"></script>
+    <script src="js/apps/games.js"></script>
+    <script src="js/apps/viewer.js"></script>
+    <script src="js/apps/external-apps.js"></script>
     <script src="js/apps/about.js"></script>
     <script src="js/init.js"></script>
+
+
+
+
 </body>
 </html>

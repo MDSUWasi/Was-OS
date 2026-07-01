@@ -7,10 +7,7 @@
     
     window.addEventListener('load', async () => {
         try {
-            // 1. Initialize VFS
             VFS.init();
-            
-            // 2. Initialize Core Components
             await Promise.all([
                 new Promise(resolve => {
                     if (typeof WindowManager !== 'undefined') {
@@ -31,25 +28,34 @@
                     }
                 })
             ]);
-            
-            // 3. Setup UI Components
             if (typeof OS !== 'undefined') {
                 OS.setupStartMenu();
                 OS.Clock?.init?.();
                 OS.Calendar?.init?.();
             }
-            
-            // 4. Restore User Settings
             const savedTheme = localStorage.getItem('wasos_theme');
             if (savedTheme) {
                 applyTheme(savedTheme);
             }
-            
-            // 5. Calculate Boot Time
+
+            const savedBackground = localStorage.getItem('wasos_background');
+            const bgType = localStorage.getItem('wasos_bg_type');
+            if (savedBackground) {
+                applyBackground(savedBackground, bgType);
+            }
+
+            const savedWindowStyle = localStorage.getItem('wasos_window_style');
+            if (savedWindowStyle) {
+                document.body.classList.add(`window-style-${savedWindowStyle}`);
+            }
+
+            const clockVisible = localStorage.getItem('wasos_show_clock');
+            const dateVisible = localStorage.getItem('wasos_show_date');
+            document.getElementById('clock').style.display = clockVisible === 'false' ? 'none' : 'inline-flex';
+            document.getElementById('calendar').style.display = dateVisible === 'false' ? 'none' : 'inline-flex';
             const totalTime = ((performance.now() - bootTime) / 1000).toFixed(2);
             console.log(`%c✅ Was-OS initialized in ${totalTime}s`, 'color:#2ec27e');
             
-            // 6. Welcome Notification
             setTimeout(() => {
                 Notifier.show({
                     title: 'System Ready',
@@ -72,48 +78,39 @@
             `;
         }
         
-        // Event Listeners
         bindUIEvents();
     });
     
-    // Bind UI Event Listeners
     function bindUIEvents() {
-        // Start Button
         document.getElementById('start-btn')?.addEventListener('click', () => {
             WindowManager?.toggleStartMenu?.();
         });
         
-        // Activities Button
         document.getElementById('activities-btn')?.addEventListener('click', () => {
             WindowManager?.toggleActivities?.();
         });
         
-        // Settings Button
         document.getElementById('settings-btn')?.addEventListener('click', () => {
             OS?.launchApp('settings');
         });
         
-        // Power Button
         document.getElementById('power-btn')?.addEventListener('click', () => {
             OS?.shutdown();
         });
         
-        // Shutdown in Start Menu
         document.getElementById('shutdown-btn')?.addEventListener('click', () => {
             OS?.shutdown();
         });
         
-        // Show All in Start Menu
         document.getElementById('show-all-btn')?.addEventListener('click', () => {
-            OS?.launchApp('software');
+            WindowManager?.toggleStartMenu?.();
+            OS?.launchApp('external-apps');
         });
         
-        // Clock & Calendar
         updateClock();
         setInterval(updateClock, 1000);
         updateCalendar();
         
-        // Close menus when clicking outside
         document.addEventListener('click', (e) => {
             const startMenu = document.getElementById('start-menu');
             const activities = document.getElementById('activities-overlay');
@@ -122,9 +119,13 @@
                 e.target.id !== 'start-btn' && e.target.closest('#start-btn') === null) {
                 startMenu.classList.add('hidden');
             }
+
+            if (activities && !activities.contains(e.target) &&
+                e.target.id !== 'activities-btn' && e.target.closest('#activities-btn') === null) {
+                activities.classList.add('hidden');
+            }
         });
         
-        // Prevent accidental tab close
         window.addEventListener('beforeunload', (e) => {
             const openWindows = WindowManager?.getWindowCount?.() || 0;
             if (openWindows > 0) {
@@ -152,11 +153,25 @@
         const themes = {
             gradient: 'linear-gradient(135deg, #0a0e17 0%, #1a1f2e 50%, #0a0e17 100%)',
             dark: '#1a1a1e',
-            nature: 'linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%)'
+            nature: 'linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%)',
+            purple: 'linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%)'
         };
         
         const bg = themes[themeName] || themes.gradient;
         document.body.style.background = bg;
         document.body.style.animation = themeName === 'gradient' ? 'bgShift 15s ease infinite' : 'none';
+        localStorage.setItem('wasos_theme', themeName);
+    }
+
+    function applyBackground(value, type = 'color') {
+        document.body.style.background = value;
+        if (type === 'image' && value.startsWith('data:image')) {
+            document.body.style.animation = 'none';
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundRepeat = 'no-repeat';
+        } else {
+            document.body.style.animation = 'bgShift 15s ease infinite';
+        }
     }
 })();

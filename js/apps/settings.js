@@ -61,10 +61,44 @@ OS.registerApp({
                 </div>
             `;
 
-            root.append(wpSection, infoSection);
+            const styleSection = document.createElement('div');
+            styleSection.style.cssText = 'background:#181b24;padding:20px;border-radius:8px;margin-bottom:20px;';
+            styleSection.innerHTML = `
+                <h3 style="margin-top:0;color:#fff;">Window Style</h3>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button data-style="glass" class="style-btn" style="flex:1;min-width:100px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.05);color:#fff;cursor:pointer;">Glass</button>
+                    <button data-style="transparent" class="style-btn" style="flex:1;min-width:100px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.05);color:#fff;cursor:pointer;">Transparent</button>
+                    <button data-style="solid" class="style-btn" style="flex:1;min-width:100px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.05);color:#fff;cursor:pointer;">Solid</button>
+                </div>
+            `;
+
+            const appearanceSection = document.createElement('div');
+            appearanceSection.style.cssText = 'background:#181b24;padding:20px;border-radius:8px;margin-bottom:20px;';
+            appearanceSection.innerHTML = `
+                <h3 style="margin-top:0;color:#fff;">Appearance</h3>
+                <label style="display:flex;align-items:center;gap:10px;color:#ccc;font-size:0.9rem;"><input type="checkbox" id="${pid}_show_clock" style="width:16px;height:16px;"> Show clock in top panel</label>
+                <label style="display:flex;align-items:center;gap:10px;color:#ccc;font-size:0.9rem;margin-top:10px;"><input type="checkbox" id="${pid}_show_date" style="width:16px;height:16px;"> Show date in top panel</label>
+            `;
+
+            root.append(wpSection, styleSection, appearanceSection, infoSection);
             container.appendChild(root);
             container.appendChild(fileInput); // Append hidden input
-            
+
+            const savedBackground = localStorage.getItem('wasos_background');
+            const savedBgType = localStorage.getItem('wasos_bg_type');
+            if (savedBackground) {
+                const label = savedBgType === 'image' ? 'Custom Image' : 'Current Theme';
+                document.getElementById(`${pid}_bg_status`).textContent = label;
+            }
+
+            const savedWindowStyle = localStorage.getItem('wasos_window_style') || 'glass';
+            document.body.classList.add(`window-style-${savedWindowStyle}`);
+            styleSection.querySelectorAll('.style-btn').forEach(btn => {
+                if (btn.dataset.style === savedWindowStyle) {
+                    btn.style.borderColor = '#3584e4';
+                }
+            });
+
             // LOGIC
 
             // 1. Handle Upload Button Click
@@ -128,6 +162,7 @@ OS.registerApp({
                     applyWallpaper(bgValue);
                     localStorage.setItem('wasos_background', bgValue);
                     localStorage.setItem('wasos_bg_type', 'color');
+                    localStorage.setItem('wasos_theme', themeKey);
                     
                     Notifier.show({
                         title: 'Theme Changed',
@@ -138,10 +173,43 @@ OS.registerApp({
                 };
             });
 
+            const styleButtons = styleSection.querySelectorAll('.style-btn');
+            styleButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const style = btn.dataset.style;
+                    document.body.classList.remove('window-style-glass', 'window-style-transparent', 'window-style-solid');
+                    document.body.classList.add(`window-style-${style}`);
+                    localStorage.setItem('wasos_window_style', style);
+                    styleButtons.forEach(item => item.style.borderColor = 'rgba(255,255,255,0.08)');
+                    btn.style.borderColor = '#3584e4';
+                    Notifier.show({ title: 'Window Style', message: `Set to ${style}`, type: 'success' });
+                });
+            });
+
+            const showClockInput = document.getElementById(`${pid}_show_clock`);
+            const showDateInput = document.getElementById(`${pid}_show_date`);
+            const clockElement = document.getElementById('clock');
+            const dateElement = document.getElementById('calendar');
+
+            showClockInput.checked = localStorage.getItem('wasos_show_clock') !== 'false';
+            showDateInput.checked = localStorage.getItem('wasos_show_date') !== 'false';
+            clockElement.style.display = showClockInput.checked ? 'inline-flex' : 'none';
+            dateElement.style.display = showDateInput.checked ? 'inline-flex' : 'none';
+
+            showClockInput.addEventListener('change', () => {
+                localStorage.setItem('wasos_show_clock', showClockInput.checked);
+                clockElement.style.display = showClockInput.checked ? 'inline-flex' : 'none';
+            });
+            showDateInput.addEventListener('change', () => {
+                localStorage.setItem('wasos_show_date', showDateInput.checked);
+                dateElement.style.display = showDateInput.checked ? 'inline-flex' : 'none';
+            });
+
             // 4. Reset Button
             document.getElementById(`${pid}_reset_bg`).onclick = () => {
                 localStorage.removeItem('wasos_background');
                 localStorage.removeItem('wasos_bg_type');
+                localStorage.removeItem('wasos_theme');
                 document.body.style.background = 'linear-gradient(135deg, #1c355e 0%, #0c101f 100%)';
                 document.body.style.animation = 'bgShift 15s ease infinite';
                 
